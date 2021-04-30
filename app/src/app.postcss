@@ -1,0 +1,71 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* light theme variables */
+    --text-color: #000000;
+    --color-text-base: 255, 255, 255;
+    --color-text-muted: 199, 210, 254;
+    --color-text-light: 128, 180, 224;
+    --color-text-inverted: 79, 70, 229;
+    --color-fill: 67, 56, 202;
+    --color-button-accent: 255, 255, 255;
+    --color-button-accent-hover: 238, 242, 255;
+    --color-button-muted: 99, 102, 241;
+
+    /* light theme syntax colors */
+    --code-fill: rgba(128, 128, 128, 0.1);
+    --code-normal: #333333; /*hsl(45, 7%, 45%)*/
+    --code-string: hsl(41, 37%, 45%); /*#183691 */
+    --code-number: hsl(102, 27%, 50%); /* #0086b3;*/
+    --code-atrule: var(--code-string);
+    --code-keyword: hsl(204, 58%, 45%); /* #795da3;*/
+    --code-comment: #969896; /*hsl(210, 25%, 60%)*/
+    --code-property: #63a35c;
+    --code-selector: var(--code-keyword);
+    --code-operator: hsl(19, 67%, 45%);
+    --code-function: hsl(19, 67%, 45%); /* #a71d5d; */
+
+    --code-gutter-marker: black;
+    --code-gutter-subtle: #999;
+    --code-cursor: #24292e;
+    --code-cursor-block: rgba(20, 255, 20, 0.5);
+    --code-linenumbers: rgba(27, 31, 35, 0.3);
+
+    /* state colors */
+    --state-info-fill: #c1d9fa;
+    --state-info-text: #215aa6;
+    --state-pass-fill: #d4f1e0;
+    --state-pass-pass: #4e916a;
+    --state-fail-fill: #f3c2c2;
+    --state-fail-text: #972424;
+    --state-warn-fill: #fdeeca;
+    --state-warn-text: #ae8b37;
+  }
+
+  .theme-dark {
+    /* one dark theme syntax colors */
+    --code-fill: #282c34;
+    --code-normal: #e06c75; /*#ABB2BF;*/
+    --code-string: #98c379;
+    --code-number: #d19a66;
+    --code-atrule: #61afef;
+    --code-keyword: #c678dd;
+    --code-comment: #5c6370;
+    --code-property: #d19a66;
+    --code-selector: #e06c75;
+    --code-operator: #56b6c2;
+    --code-function: #61afef;
+  }
+
+  body {
+    @apply h-screen w-full;
+  }
+
+  #svelte {
+    @apply flex flex-col h-full w-full;
+  }
+}
