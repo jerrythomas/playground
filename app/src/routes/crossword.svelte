@@ -18,7 +18,7 @@
 <svelte:head>
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
 </svelte:head>
-<div class="m-10">
+<div class="flex flex-col m-10">
   <Crossword {...cw} />
   {#if Object.keys(activeClue).length > 0}
     <Clue {...activeClue} />

@@ -1,5 +1,5 @@
 <script>
-  import { shuffle } from 'lodash-es'
+  import { shuffle } from 'lodash'
   import IconShuffle from './IconShuffle.svelte'
   import WordPills from './WordPills.svelte'
 

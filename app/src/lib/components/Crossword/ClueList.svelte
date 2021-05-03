@@ -1,16 +1,16 @@
 <script>
+  import ClueLine from './ClueLine.svelte'
   export let direction
   export let clues
+
+  $: list = Object.keys(clues).map((key) => clues[key])
 </script>
 
-<h1 class="font-bold w-full mb-4 border-b border-gray-600">
+<h1 class="font-bold w-full my-2">
   {direction}
 </h1>
-<ul class="flex flex-column w-full">
-  {#each clues as { clue, number }}
-    <li class="flex flex-row">
-      <i class="flex w-8">{number}</i>
-      <p class="flex flex-grow">{clue}</p>
-    </li>
+<ul class="flex flex-col w-full">
+  {#each list as { clue, number }}
+    <ClueLine {clue} {number} />
   {/each}
 </ul>

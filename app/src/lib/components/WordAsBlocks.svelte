@@ -1,5 +1,5 @@
 <script>
-  import { shuffle as _shuffle } from 'lodash-es'
+  import { shuffle as _shuffle } from 'lodash'
   import cssVars from 'svelte-css-vars'
 
   export let word

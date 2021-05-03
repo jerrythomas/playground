@@ -1,5 +1,6 @@
 <script>
   import cssVars from 'svelte-css-vars'
+  import ClueLine from './ClueLine.svelte'
 
   export let clue
   // export let direction
@@ -14,15 +15,10 @@
   // }
 </script>
 
-<div class="flex flex-col m-auto items-center justify-center my-4 mx-auto" use:cssVars={styleVars}>
-  <span class="flex flex-row mx-auto my-4 h-8 border-b border-gray-200">
-    <i class="flex text-xs w-4 text-gray-400 mr-2 align-text-top px-2">{number}</i>
-    <p class="flex flex-grow mx-auto text-left">
-      {clue}
-    </p>
-  </span>
+<div class="flex flex-col items-center my-4 mx-auto" use:cssVars={styleVars}>
+  <ClueLine {clue} {number} />
   {#if allowed}
-    <ul class=" flex flex-row flex-wrap justify-center items-center pr-1 text-lg">
+    <ul class=" flex flex-row flex-wrap justify-center items-center pr-2 text-lg">
       {#each allowed as { char, used }}
         <li class:used class="ml-2 mb-2 first:ml-0">
           {char}
@@ -39,8 +35,7 @@
     @apply bg-gray-500 text-gray-50;
   }
 
-  span,
-  ul {
+  div {
     width: calc(3.25rem * var(--width) + 0.25rem);
   }
   .used {

@@ -1,9 +1,5 @@
-// import shuffle from 'lodash/omit'
-// import omit from 'lodash/omit'
-// import sampleSize from 'lodash/sampleSize'
-
-import { shuffle, sampleSize } from 'lodash'
-import { omit } from '$lib/utils'
+import { shuffle, sampleSize, omit } from 'lodash'
+// import { omit } from '$lib/utils'
 
 const alphabets = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
