@@ -1,4 +1,5 @@
 const { tailwindExtractor } = require('tailwindcss/lib/lib/purgeUnusedStyles')
+const { pass, fail, warn, info } = require('./colors.cjs')
 
 function withOpacity(variableName) {
   return ({ opacityValue }) => {
@@ -38,10 +39,17 @@ module.exports = {
       ]
     },
     extend: {
+      colors: {
+        pass,
+        fail,
+        warn,
+        info
+      },
       padding: {
         '1/3': '33.33333%',
         '2/3': '66.66667%'
       },
+
       textColor: {
         skin: {
           base: withOpacity('--color-text-base'),

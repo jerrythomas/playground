@@ -1,5 +1,5 @@
 <script>
-  import _ from 'lodash'
+  import { shuffle } from 'lodash-es'
   import IconShuffle from './IconShuffle.svelte'
   import WordPills from './WordPills.svelte'
 
@@ -14,7 +14,7 @@
   $: blocks = Array.from(value)
 
   function scramble() {
-    blocks = _.shuffle(blocks)
+    blocks = shuffle(blocks)
   }
   function refresh() {
     fetch(wordUrl).then((response) => {

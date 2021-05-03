@@ -1,6 +1,9 @@
 <script>
+  import { chunkArray } from './utils'
+
   export let words = []
   export let state = ''
+  export let maxRows = 5
 
   let colors = {
     pass: 'green',
@@ -8,14 +11,20 @@
     warn: 'yellow',
     fail: 'red'
   }
+
   $: color = colors[state] || 'gray'
+  $: size = Math.max(Math.ceil(words.length / maxRows), maxRows)
+  $: chunks = chunkArray(words, size)
 </script>
 
-<div class="flex flex-row flex-wrap justify-center leading p-4 md:overflow-y-scroll">
-  {#each words as word}
-    <p
-      class="px-3 mr-2 mb-2 rounded-full bg-{color}-50 text-{color}-500 border border-{color}-200 ">
-      {word}
-    </p>
+<ul class="flex flex-col m-auto items-center justify-center">
+  {#each chunks as chunk}
+    <li class="flex flex-row justify-center content-between">
+      {#each chunk as word}
+        <p class="px-4 m-1 rounded-full bg-{color}-50 text-{color}-500 border border-{color}-200">
+          {word}
+        </p>
+      {/each}
+    </li>
   {/each}
-</div>
+</ul>
