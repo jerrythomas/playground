@@ -1,5 +1,6 @@
 <script>
   import Sidebar from '$lib/components/Sidebar.svelte'
+  import SplitView from '$lib/components/SplitView.svelte'
   let items = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
@@ -10,7 +11,13 @@
   ]
 </script>
 
-<div class="flex flex-row flex-grow">
-  <Sidebar {items} />
-  <section><slot /></section>
-</div>
+<SplitView min={10} pos={15}>
+  <!-- <div slot="a"> -->
+  <Sidebar {items} slot="a" />
+  <!-- </div> -->
+  <section slot="b" class="flex w-full bg-red-100"><slot /></section>
+</SplitView>
+<!-- <div class="flex flex-row flex-grow">
+  
+  
+</div> -->

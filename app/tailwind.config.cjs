@@ -10,7 +10,6 @@ function withOpacity(variableName) {
     }
   }
 }
-
 module.exports = {
   mode: 'aot',
   purge: {

@@ -1,21 +1,38 @@
 <script>
   import { page } from '$app/stores'
+  // import logo from './svelte-logo.svg';
   import Logo from './svelte-logo.svelte'
 </script>
 
-<header class="flex flex-row items-center bg-gray-800 h-12">
-  <div class="flex  justify-center">
+<header class="flex justify-between h-12 border-b">
+  <div class="corner">
     <a href="https://kit.svelte.dev">
+      <!-- <img src={logo} alt="SvelteKit" /> -->
       <Logo size="40" />
     </a>
   </div>
 
-  <nav>
-    <ul>
+  <nav class="flex justify-center">
+    <svg viewBox="0 0 2 3" aria-hidden="true">
+      <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
+    </svg>
+    <ul class="flex flex-row relative justify-center align-center">
       <li class:active={$page.path === '/'}><a sveltekit:prefetch href="/">Home</a></li>
       <li class:active={$page.path === '/about'}><a sveltekit:prefetch href="/about">About</a></li>
       <li class:active={$page.path === '/todos'}><a sveltekit:prefetch href="/todos">Todos</a></li>
+      <li class:active={$page.path === '/counter'}>
+        <a sveltekit:prefetch href="/counter">Counter</a>
+      </li>
+      <li class:active={$page.path === '/splitview'}>
+        <a sveltekit:prefetch href="/splitview">Splitview</a>
+      </li>
+      <li class:active={$page.path === '/words'}>
+        <a sveltekit:prefetch href="/words">Words</a>
+      </li>
     </ul>
+    <svg viewBox="0 0 2 3" aria-hidden="true">
+      <path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
+    </svg>
   </nav>
 
   <div class="corner">
@@ -23,16 +40,19 @@
   </div>
 </header>
 
-<style>
-  header {
-    height: 3em;
-  }
+<style type="postcss">
+  /* header {
+		display: flex;
+		justify-content: space-between;
+	} */
+
   .corner {
-    width: 3em;
-    height: 3em;
+    /* width: 3em;
+		height: 3em; */
+    @apply w-12 h-12;
   }
 
-  /* .corner a {
+  .corner a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,44 +60,45 @@
     height: 100%;
   }
 
-  .corner img {
-    width: 2em;
-    height: 2em;
-    object-fit: contain;
-  } */
+  /* .corner img {
+		width: 2em;
+		height: 2em;
+		object-fit: contain;
+	} */
 
   nav {
-    display: flex;
-    justify-content: center;
-    /* --background: rgba(255, 255, 255, 0.7); */
+    /* display: flex;
+		justify-content: center; */
+    --background: rgba(255, 255, 255, 0.7);
   }
 
   /* svg {
-    width: 2em;
-    height: 3em;
-    display: block;
-  } */
+		width: 2em;
+		height: 3em;
+		display: block;
+	} */
 
-  /* path {
-    fill: var(--color-fill);
-  } */
-
-  ul {
-    position: relative;
-    padding: 0;
-    margin: 0;
-    height: 3em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    /* background: var(--background); */
-    background-size: contain;
+  path {
+    fill: var(--background);
   }
 
+  /* ul {
+		position: relative;
+		padding: 0;
+		margin: 0;
+		height: 3em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		list-style: none;
+		background: var(--background);
+		background-size: contain;
+	}*/
+
   li {
-    position: relative;
-    height: 100%;
+    @apply h-full relative;
+    /* position: relative; */
+    /* height: 100%; */
   }
 
   li.active::before {

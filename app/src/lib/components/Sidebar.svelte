@@ -2,9 +2,9 @@
   export let items = []
 </script>
 
-<ul class="flex flex-col bg-gray-100 text-gray-900 h-full w-96">
+<ul class="flex flex-col bg-gray-100 text-gray-900 h-full w-full">
   {#each items as item}
-    <li class:separator={item.separator}>
+    <li class:separator={item.separator} class="">
       {#if item.separator}
         <hr />
       {:else}
@@ -14,9 +14,11 @@
   {/each}
 </ul>
 
-<style>
+<style lang="postcss">
   li {
-    @apply h-12 px-4 leading-loose py-2 hover:bg-gray-600 hover:text-white;
+    @apply h-12 px-4 py-2 leading-loose;
+    @apply hover:bg-gray-300;
+    @apply hover:text-white;
   }
   .separator {
     @apply py-2 h-4 hover:bg-transparent;

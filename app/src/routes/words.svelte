@@ -1,7 +1,7 @@
 <script>
   import { shuffle } from 'lodash'
-  import IconShuffle from './IconShuffle.svelte'
-  import WordPills from './WordPills.svelte'
+  import IconShuffle from '$lib/icons/IconShuffle.svelte'
+  import WordPills from '$lib/components/WordPills.svelte'
 
   let value = 'world'
   let word = ''
@@ -71,7 +71,7 @@
       <b class="px-2 text-right">{score}</b>
     </div>
   </span>
-  <WordPills words={guesses} />
+  <WordPills words={guesses} state="info" />
   <hr />
-  <WordPills words={misses} state="error" />
+  <WordPills words={misses} state="fail" />
 </div>

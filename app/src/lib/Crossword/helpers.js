@@ -1,5 +1,6 @@
-import { shuffle, sampleSize, omit } from 'lodash'
-// import { omit } from '$lib/utils'
+import { shuffle, sampleSize } from 'lodash'
+// import _ from 'lodash'
+import { range, sorted, omit } from '$lib/utils'
 
 const alphabets = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
@@ -102,6 +103,7 @@ function addNumbers(input) {
 function makeClues(input) {
   let clues = { down: {}, across: {} }
   input.map((d) => {
+    let cells = []
     const answer = Array.from(d.answer).map((char) => {
       return { char, valid: true }
     })
@@ -110,7 +112,9 @@ function makeClues(input) {
     })
     const allowed = shuffle([...answer, ...filler])
     const props = omit(d, ['id', 'x', 'y'])
-    clues[d.direction][d.number] = { ...props, allowed }
+    if (d.direction === 'across') cells = range(d.x, d.answer.length).map((x) => ({ x, y: d.y }))
+    else cells = range(d.y, d.answer.length).map((y) => ({ x: d.x, y }))
+    clues[d.direction][d.number] = { ...props, allowed, cells }
   })
 
   return clues
@@ -134,10 +138,16 @@ function makeCells(input, size) {
       let number = d.number
       let id = `${x}-${y}`
       let first = i == 0
+
       if (!(id in cells)) {
-        cells[id] = { x, y, answer }
+        cells[id] = { x, y, directions: {}, number: null }
       }
-      cells[id][d.direction] = { first, answer, number }
+      cells[id].number = first ? number : cells[id].number
+      cells[id].directions[d.direction] = { first, number }
+
+      cells[id].directions = sorted(cells[id].directions)
+      // 			cells[id].directionKeys = Object.keys(cells[id].directions).sort()
+      // 			cells[id].directionKeys = Object.keys(cells[id].directions)
     })
   })
 

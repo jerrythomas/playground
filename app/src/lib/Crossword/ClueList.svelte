@@ -6,7 +6,7 @@
   $: list = Object.keys(clues).map((key) => clues[key])
 </script>
 
-<h1 class="font-bold w-full my-2">
+<h1 class="font-bold w-full my-2 uppercase px-2 border-b leading-loose">
   {direction}
 </h1>
 <ul class="flex flex-col w-full">

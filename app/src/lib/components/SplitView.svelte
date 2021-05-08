@@ -1,13 +1,13 @@
 <script>
   import cssVars from 'svelte-css-vars'
-  import Splitter from './Splitter.svelte'
+  import Splitter from './Splitter/index.svelte'
 
   export let vertical = false
   export let min = 30
   export let max = 70
   export let pos = 30
 
-  let sizes = [pos, 100 - pos]
+  $: sizes = [pos, 100 - pos]
 
   $: direction = { direction: vertical ? 'flex-col' : 'flex-row' }
   $: sizeA = {
@@ -20,13 +20,12 @@
   }
 
   function onSplitterChange(e) {
-    sizes[e.detail.index] = e.detail.pos - e.detail.offset
-    sizes[e.detail.index + 1] = 100 - e.detail.pos + e.detail.offset
+    pos = e.detail.pos - e.detail.offset
   }
 </script>
 
 <div class="relative flex w-full h-full" use:cssVars={direction}>
-  <section use:cssVars={sizeA} class="flex flex-grow flex-shrink select-none">
+  <section use:cssVars={sizeA} class="flex flex-grow flex-shrink select-none bg-purple-300">
     <slot name="a" />
   </section>
   <section use:cssVars={sizeB} class="flex flex-grow flex-shrink select-none">
