@@ -91,6 +91,7 @@
   function handleCursorMoved(e) {
     // console.log(e.detail);
     const next = getNextClue(clues, cells, current, e.detail)
+
     if (!isEqual(next.clue, current.clue)) {
       if (!isEmpty(current.clue)) {
         clearCells(clues, current)
@@ -100,6 +101,14 @@
       activateCells(clues, current)
     }
     moveCursorTo(next.cell)
+    const { x, y } = current.cell
+    console.log('clearing', x, y)
+    if (cells[y][x].error) clearErrors()
+    if (cells[y][x].answer !== '' && !cells[y][x].solved) {
+      const index = findKey(allowedKeys.allowed, cells[y][x].answer, true)
+      onChange(current.cell, index, true)
+      console.log('clearing', x, y, index)
+    }
 
     // console.log(current);
   }
@@ -196,7 +205,15 @@
   function handleKeyClick(e) {
     console.log('key click', e.detail)
     replaceChar(e.detail.char)
-    moveToNextCell()
+    if (hasPending(clues, current)) {
+      if (e.detail.remove) {
+        clearErrors()
+      } else {
+        moveToNextCell()
+      }
+    } else {
+      validate(clues, current)
+    }
   }
 </script>
 

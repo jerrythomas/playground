@@ -54,11 +54,14 @@ export function keyboard(node, { allowed, cells, cursor }) {
     } else if (e.key === ' ' || e.key === 'Enter')
       node.dispatchEvent(new CustomEvent('move', { detail: data.cursor }))
     else if (e.key === 'Backspace' || e.key === 'Delete') {
-      const index = findKey(data.allowed, data.cells[y][x].answer, true)
-      console.log(e.key, index)
-      if (index != -1)
-        node.dispatchEvent(new CustomEvent('change', { detail: { index, remove: true } }))
+      if (!data.cells[y][x].solved) {
+        const index = findKey(data.allowed, data.cells[y][x].answer, true)
+        console.log(e.key, index)
+        if (index != -1)
+          node.dispatchEvent(new CustomEvent('change', { detail: { index, remove: true } }))
+      }
     } else if (!isEmpty(data.cursor) && data.cells[y][x].answer === '') {
+      // should it be allowed to replace the chars from available keys
       const index = findKey(data.allowed, e.key.toUpperCase(), false)
       console.log(index, e.key.toUpperCase(), data.allowed)
       if (index != -1)
