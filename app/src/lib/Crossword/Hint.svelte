@@ -13,6 +13,6 @@
 
 <style>
   .active {
-    background-color: aliceblue;
+    @apply bg-red-200;
   }
 </style>

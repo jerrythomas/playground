@@ -20,7 +20,7 @@
   {#if allowed}
     <ul class="flex flex-row flex-wrap justify-center items-center pr-1 text-lg">
       {#each allowed as { char, used }}
-        <Key {char} disabled={used} />
+        <Key {char} disabled={used} on:click />
       {/each}
     </ul>
   {/if}

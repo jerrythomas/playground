@@ -1,4 +1,4 @@
-import { shuffle, sampleSize } from 'lodash'
+import { shuffle, sampleSize, difference } from 'lodash'
 // import _ from 'lodash'
 import { range, sorted, omit } from '$lib/utils'
 
@@ -104,11 +104,12 @@ function makeClues(input) {
   let clues = { down: {}, across: {} }
   input.map((d) => {
     let cells = []
-    const answer = Array.from(d.answer).map((char) => {
-      return { char, valid: true }
+    const values = Array.from(d.answer)
+    const answer = values.map((char) => {
+      return { char, valid: true, used: false }
     })
-    const filler = sampleSize(alphabets, 4).map((char) => {
-      return { char, valid: false }
+    const filler = sampleSize(difference(alphabets, values), 4).map((char) => {
+      return { char, valid: false, used: false }
     })
     const allowed = shuffle([...answer, ...filler])
     const props = omit(d, ['id', 'x', 'y'])
@@ -140,11 +141,10 @@ function makeCells(input, size) {
       let first = i == 0
 
       if (!(id in cells)) {
-        cells[id] = { x, y, directions: {}, number: null }
+        cells[id] = { x, y, directions: {}, number: null, answer: '', expected: answer }
       }
       cells[id].number = first ? number : cells[id].number
       cells[id].directions[d.direction] = { first, number }
-
       cells[id].directions = sorted(cells[id].directions)
       // 			cells[id].directionKeys = Object.keys(cells[id].directions).sort()
       // 			cells[id].directionKeys = Object.keys(cells[id].directions)
