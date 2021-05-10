@@ -122,6 +122,24 @@
       cells[cursor.y][cursor.x].error = error
       cells[cursor.y][cursor.x].solved = cells[cursor.y][cursor.x].solved || !error
     })
+    if (!error) {
+      const other = current.clue.direction === 'across' ? 'down' : 'across'
+
+      clue.cells.map((cursor) => {
+        cells[cursor.y][cursor.x].solved = true
+        // update the clue to mark the allowed keys as used.
+        if (other in cells[cursor.y][cursor.x].directions) {
+          const number = cells[cursor.y][cursor.x].directions[other].number
+          const index = findKey(
+            clues[other][number].allowed,
+            cells[cursor.y][cursor.x].answer,
+            false
+          )
+          console.log(other, number, cells[cursor.y][cursor.x].answer, index)
+          if (index != -1) clues[other][number].allowed[index].used = true
+        }
+      })
+    }
     // }
   }
   function clearErrors() {
