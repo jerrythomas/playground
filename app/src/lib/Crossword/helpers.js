@@ -141,13 +141,19 @@ function makeCells(input, size) {
       let first = i == 0
 
       if (!(id in cells)) {
-        cells[id] = { x, y, directions: {}, number: null, answer: '', expected: answer }
+        cells[id] = {
+          x,
+          y,
+          directions: {},
+          number: null,
+          value: ''
+          // expected: answer,
+          // position: i
+        }
       }
       cells[id].number = first ? number : cells[id].number
       cells[id].directions[d.direction] = { first, number }
       cells[id].directions = sorted(cells[id].directions)
-      // 			cells[id].directionKeys = Object.keys(cells[id].directions).sort()
-      // 			cells[id].directionKeys = Object.keys(cells[id].directions)
     })
   })
 

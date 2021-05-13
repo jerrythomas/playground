@@ -84,3 +84,29 @@ export function chunkArray(input, size) {
   }
   return results
 }
+
+/**
+ * Move the current cursor in any of the eight directions
+ * using a combination of steps for either axis. Cells are
+ * skipped if they are blank or have been solved.
+ *
+ * @param cells  {array} A square two dimentional array
+ * @param cursor {dict}  Current cursor with (x, y) coordinates
+ * @param stepX  {int}   The step size to be used on X axis
+ * @param stepY  {int}   The step size to be used on Y axis
+ */
+export function stepper(cells, cursor, stepX = 0, stepY = 0, skip = () => false) {
+  const size = cells.length - 1
+
+  let nextY = cycle(0, size, (cursor.y || 0) + stepY)
+  let nextX = cycle(0, size, (cursor.x || 0) + stepX)
+  let i = 1
+
+  while (i <= size && skip(cells, nextX, nextY)) {
+    nextY = cycle(0, size, nextY + stepY)
+    nextX = cycle(0, size, nextX + stepX)
+    i++
+  }
+
+  return { x: nextX, y: nextY }
+}

@@ -1,253 +1,155 @@
 <script>
-  import { onMount } from 'svelte'
   import cssVars from 'svelte-css-vars'
+  import { isEqual, isEmpty } from 'lodash'
+  import { navigate } from './keyboard'
+  import { stepper, omit } from '$lib/utils'
+
   import Cell from './Cell.svelte'
   import ClueKeys from './ClueKeys.svelte'
-  import { keyboard, findKey, move } from './actions'
-  import { isEqual, isEmpty } from 'lodash'
-  import { omit } from '$lib/utils'
 
-  export let size = 0
+  import { skipBlanks, skipFilled, replaceAllowed } from './crossword'
+  import { getClueForDirection, markFailed, clearErrors, markSolved, navigateTo } from './crossword'
+
+  export let size
   export let cells
   export let clues
+
   export let showKeyboard = true
 
-  let hideUntilMounted = true
+  let hasFailed = false
+  let first = Object.keys(clues['across'])[0]
   let current = {
-    cell: {},
-    clue: {}
+    clue: clues['across'][first],
+    cell: clues['across'][first].cells[0]
   }
-  $: allowedKeys = isEmpty(current.clue)
-    ? {}
-    : omit(clues[current.clue.direction][current.clue.number], ['cells', 'answer', 'direction'])
-  $: console.log(hideUntilMounted)
-  onMount(async () => {
-    hideUntilMounted = false
-  })
 
-  $: focussed = !isEmpty(current.clue)
   $: style = { size: size }
-
-  function toggle(directions, current) {
-    const whichWay = ((current === 'across' ? 0 : 1) + 1) % directions.length
-    return directions[whichWay]
+  $: allowed = current.clue.allowed.filter((el) => !el.used).map(({ char }) => char)
+  $: activeCell = { x: current.cell.x, y: current.cell.y, allowed }
+  $: focussed = !isEmpty(current.cell)
+  function clearCells(clue) {
+    clue.cells.map((pos) => {
+      cells[pos.y][pos.x].error = false
+      if (!cells[pos.y][pos.x].solved) cells[pos.y][pos.x].value = ''
+    })
+    return cells
   }
+  function validate(current) {
+    const filled =
+      current.clue.allowed.filter(({ used }) => used).length == current.clue.answer.length
+    const solved = current.clue.allowed.filter(({ valid, used }) => valid && !used).length == 0
 
-  function retain(directions, current) {
-    return directions.includes(current) ? current : directions[0]
-  }
-  function getNextClue(clues, cells, current, next) {
-    const { x, y } = next
-    const directions = Object.keys(cells[y][x].directions)
-    const which = isEqual(current.cell, next)
-      ? toggle(directions, current.clue.direction)
-      : retain(directions, current.clue.direction)
-    const clue = { direction: which, number: cells[y][x].directions[which].number }
-    let cell = isEqual(current.clue, clue) ? next : clues[clue.direction][clue.number].cells[0]
-    return { cell, clue }
-  }
-
-  function clearCells(clues, current) {
-    const clue = clues[current.clue.direction][current.clue.number]
-    clue.cells.map((cursor) => {
-      cells[cursor.y][cursor.x]['active'] = false
-      cells[cursor.y][cursor.x].error = false
-      if (!cells[cursor.y][cursor.x].solved) {
-        // cells[cursor.y][cursor.x].answer = ''
-        let index = findKey(allowedKeys.allowed, cells[cursor.y][cursor.x].answer, true)
-        if (index != -1) onChange(cursor, index, true)
+    if (filled) {
+      if (solved) {
+        markSolved(current.clue, cells, clues)
+      } else {
+        hasFailed = markFailed(current.clue, cells)
       }
-    })
-    // cells[current.cell.y][current.cell.x]['focus'] = false
-  }
-  function hasPending(clues, current) {
-    const clue = clues[current.clue.direction][current.clue.number]
-    let pending = false
-
-    for (let i = 0; !pending && i < clue.cells.length; i++) {
-      const { x, y } = clue.cells[i]
-      // console.log(x, y, cells[y][x].blank, cells[y][x].answer)
-      pending = !cells[y][x].blank && cells[y][x].answer === ''
+    } else {
+      const x = current.clue.direction === 'across' ? 1 : 0
+      const y = x == 1 ? 0 : 1
+      const coords = stepper(cells, current.cell, x, y, skipFilled)
+      current = navigateTo(coords, current, cells, clues)
     }
-
-    // console.log('pending', pending)
-    return pending
+    return current
   }
-  function activateCells(clues, current) {
-    const clue = clues[current.clue.direction][current.clue.number]
-    clue.cells.map((cursor) => {
-      cells[cursor.y][cursor.x]['active'] = true
-    })
-    // cells[current.cell.y][current.cell.x]['focus'] = true
-  }
-  function changeFocus(clues, current, focus) {
-    const clue = clues[current.clue.direction][current.clue.number]
-    clue.cells.map((cursor) => {
-      cells[cursor.y][cursor.x]['active'] = focus
-    })
-    cells[current.cell.y][current.cell.x]['focus'] = focus
-  }
-
-  function handleCursorMoved(e) {
-    // console.log(e.detail);
-    const next = getNextClue(clues, cells, current, e.detail)
-
-    if (!isEqual(next.clue, current.clue)) {
-      if (!isEmpty(current.clue)) {
-        clearCells(clues, current)
-      }
-      current.clue = next.clue
-      // current.cell = next.cell
-      activateCells(clues, current)
+  function switchClue(clue) {
+    if (hasFailed) {
+      hasFailed = clearErrors(current.clue, cells)
     }
-    moveCursorTo(next.cell)
-    const { x, y } = current.cell
-    console.log('clearing', x, y)
-    if (cells[y][x].error) clearErrors()
-    if (cells[y][x].answer !== '' && !cells[y][x].solved) {
-      const index = findKey(allowedKeys.allowed, cells[y][x].answer, true)
-      onChange(current.cell, index, true)
-      console.log('clearing', x, y, index)
-    }
-
-    // console.log(current);
-  }
-  function validate(clues, current) {
-    // loop thrugh the cells of the current clue
-    // if there is any empty cell skip validation
-    // if any of the values are wrong then mark all cells as error otherwise mark all as solved
-    const clue = clues[current.clue.direction][current.clue.number]
-    let error = false
-    // let skipped = false
-    clue.cells.map((cursor) => {
-      // skipped = skipped || cells[cursor.y][cursor.x].answer === ''
-      error =
-        error ||
-        (!cells[cursor.y][cursor.x].solved &&
-          cells[cursor.y][cursor.x].answer !== cells[cursor.y][cursor.x].expected)
-    })
-    // if (!skipped) {
-    clue.cells.map((cursor) => {
-      cells[cursor.y][cursor.x].error = error
-      cells[cursor.y][cursor.x].solved = cells[cursor.y][cursor.x].solved || !error
-    })
-    if (!error) {
-      const other = current.clue.direction === 'across' ? 'down' : 'across'
-
-      clue.cells.map((cursor) => {
-        cells[cursor.y][cursor.x].solved = true
-        // update the clue to mark the allowed keys as used.
-        if (other in cells[cursor.y][cursor.x].directions) {
-          const number = cells[cursor.y][cursor.x].directions[other].number
-          const index = findKey(
-            clues[other][number].allowed,
-            cells[cursor.y][cursor.x].answer,
-            false
-          )
-          console.log(other, number, cells[cursor.y][cursor.x].answer, index)
-          if (index != -1) clues[other][number].allowed[index].used = true
+    if (!isEqual(clue, current.clue)) {
+      current.clue.cells.map((pos) => {
+        cells[pos.y][pos.x].error = false
+        if (!cells[pos.y][pos.x].solved) {
+          current.clue.allowed = replaceAllowed(current.clue.allowed, cells[pos.y][pos.x].value, '')
+          cells[pos.y][pos.x].value = ''
         }
       })
+      current.clue = clue
     }
-    // }
   }
-  function clearErrors() {
-    const clue = clues[current.clue.direction][current.clue.number]
-    clue.cells.map((cursor) => {
-      cells[cursor.y][cursor.x].error = false
-    })
-  }
-  function onChange(cursor, index, remove = false) {
-    cells[cursor.y][cursor.x].answer = remove ? '' : allowedKeys.allowed[index].char
-    allowedKeys.allowed[index].used = !remove
-  }
-  function moveCursorTo(nextCell) {
-    if (!isEmpty(current.cell)) cells[current.cell.y][current.cell.x]['focus'] = false
-    current.cell = nextCell
-    cells[current.cell.y][current.cell.x]['focus'] = true
-  }
-  function moveToNextCell() {
-    const stepX = current.clue.direction === 'across' ? 1 : 0
-    const stepY = stepX == 0 ? 1 : 0
 
-    // skip non empty cells?
-    const nextCell = move(cells, current.cell, stepX, stepY)
-    console.log(nextCell, stepX, stepY)
-    if (!isEqual(nextCell, current.cell)) {
-      moveCursorTo(nextCell)
+  const actions = {
+    moveBy: ({ x, y }) => {
+      const coords = stepper(cells, current.cell, x, y, skipBlanks)
+      actions['moveTo'](coords)
+    },
+    moveTo: ({ x, y }) => {
+      const result = navigateTo({ x, y }, current, cells, clues)
+      if (hasFailed) {
+        hasFailed = clearErrors(current.clue, cells)
+      }
+      console.log(current.clue.allowed, result.clue.allowed)
+      current.cell = result.cell
+      current.clue = result.clue
+      cells = result.cells
+    },
+    replace: ({ x, y, value }) => {
+      if (cells[y][x].solved) return
+
+      current.clue.allowed = replaceAllowed(current.clue.allowed, cells[y][x].value, value)
+      cells[y][x].value = value
+      current = validate(current)
+    },
+    remove: ({ x, y }) => {
+      if (cells[y][x].solved) return
+
+      if (hasFailed) {
+        hasFailed = clearErrors(current.clue, cells)
+      }
+      current.clue.allowed = replaceAllowed(current.clue.allowed, cells[y][x].value, '')
+      cells[y][x].value = ''
+      // switchClue(clue)
+    },
+    toggle: ({ x, y }) => {
+      const other = current.clue.direction === 'across' ? 'down' : 'across'
+      const clue = getClueForDirection(clues, cells, other, x, y)
+      switchClue(clue)
+      console.log(clue, current)
     }
   }
 
   function handleChange(e) {
-    console.log('change', e.detail)
-    onChange(current.cell, e.detail.index, e.detail.remove)
-    if (hasPending(clues, current)) {
-      if (e.detail.remove) {
-        clearErrors()
-      } else {
-        moveToNextCell()
-      }
-    } else {
-      validate(clues, current)
-    }
-  }
-  function replaceChar(char) {
-    const { x, y } = current.cell
-
-    if (cells[y][x].answer !== '' && !cells[y][x].solved) {
-      const index = findKey(allowedKeys.allowed, cells[y][x].answer, true)
-      onChange(current.cell, index, true)
-    }
-    const index = findKey(allowedKeys.allowed, char, false)
-    onChange(current.cell, index, false)
+    actions[e.detail.action](e.detail)
   }
 
   function handleKeyClick(e) {
-    console.log('key click', e.detail)
-    replaceChar(e.detail.char)
-    if (hasPending(clues, current)) {
-      if (e.detail.remove) {
-        clearErrors()
-      } else {
-        moveToNextCell()
-      }
-    } else {
-      validate(clues, current)
-    }
+    actions['replace']({
+      x: current.cell.x,
+      y: current.cell.y,
+      value: e.detail.char
+    })
   }
 </script>
 
-<div class="flex flex-col items-center justify-center text-lg" class:hideUntilMounted>
+<div
+  class="flex flex-col items-center justify-center text-lg"
+  use:navigate={activeCell}
+  on:change={handleChange}>
   <ul
     class="grid gap-px bg-gray-700 border border-gray-700 focus:border-blue-600 focus:border-2 outline-none"
     use:cssVars={style}
-    use:keyboard={{ allowed: allowedKeys.allowed, cells, cursor: current.cell }}
-    on:move={handleCursorMoved}
-    on:change={handleChange}
-    tabindex="0">
-    {#each cells as row}
-      {#each row as cell}
-        <Cell {...omit(cell, ['directions'])} on:move={handleCursorMoved} />
+    tabindex={0}>
+    {#each cells as row, y}
+      {#each row as cell, x}
+        <Cell
+          {...omit(cell, ['directions', 'position'])}
+          cursor={current.cell}
+          clue={current.clue}
+          on:change={handleChange} />
       {/each}
     {/each}
   </ul>
-  {#if focussed}
-    <span>{current.clue.direction}</span>
-    <span>{current.clue.number}</span>
-  {/if}
   {#if showKeyboard && focussed}
-    <ClueKeys {...allowedKeys} on:click={handleKeyClick} />
+    <ClueKeys
+      clue={current.clue.clue}
+      number={current.clue.number}
+      allowed={current.clue.allowed}
+      on:click={handleKeyClick} />
   {/if}
 </div>
 
 <style>
-  div {
-    min-width: calc(var(--size) * 3em);
-    overflow: scroll;
-  }
-  .hideUntilMounted {
-    @apply hidden;
-  }
   ul {
     min-width: calc(var(--size) * (2.5rem + 1px) + 1px);
     grid-template-rows: repeat(var(--size), minmax(0, 1fr));
