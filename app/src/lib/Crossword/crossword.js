@@ -62,12 +62,14 @@ export function markFailed(clue, cells, failed = true) {
 export function markSolved(clue, cells, clues) {
   const other = clue.direction === 'across' ? 'down' : 'across'
   clue.cells.map((pos) => {
-    cells[pos.y][pos.x].solved = true
-    if (other in cells[pos.y][pos.x].directions) {
-      // mark the key as used for the other direction also
-      const number = cells[pos.y][pos.x].directions[other].number
-      let index = takeCharFromAllowed(clues[other][number].allowed, cells[pos.y][pos.x].value)
-      //       console.log(index, other, number)
+    if (!cells[pos.y][pos.x].solved) {
+      cells[pos.y][pos.x].solved = true
+      if (other in cells[pos.y][pos.x].directions) {
+        // mark the key as used for the other direction also
+        const number = cells[pos.y][pos.x].directions[other].number
+        let index = takeCharFromAllowed(clues[other][number].allowed, cells[pos.y][pos.x].value)
+        //       console.log(index, other, number)
+      }
     }
   })
 }
@@ -83,7 +85,6 @@ export function navigateTo({ x, y }, current, cells, clues) {
         cells[pos.y][pos.x].value = ''
       }
     })
-    console.log('nav', current.clue.allowed)
   }
   return { clue, cell: { x, y }, cells, current }
 }

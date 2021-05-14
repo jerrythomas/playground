@@ -2,6 +2,7 @@
   import { page } from '$app/stores'
   // import logo from './svelte-logo.svg';
   import Logo from './svelte-logo.svelte'
+
 </script>
 
 <header class="flex justify-between h-12 border-b">
@@ -40,7 +41,7 @@
   </div>
 </header>
 
-<style type="postcss">
+<style lang="postcss">
   /* header {
 		display: flex;
 		justify-content: space-between;
@@ -130,4 +131,5 @@
   a:hover {
     color: var(--accent-color);
   }
+
 </style>

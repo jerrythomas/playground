@@ -37,10 +37,14 @@
   function validate(current) {
     const filled =
       current.clue.allowed.filter(({ used }) => used).length == current.clue.answer.length
-    const solved = current.clue.allowed.filter(({ valid, used }) => valid && !used).length == 0
+    const solved =
+      current.clue.cells
+        .map((pos) => cells[pos.y][pos.x].value === cells[pos.y][pos.x].expected)
+        .filter((solved) => !solved).length == 0
 
     if (filled) {
       if (solved) {
+        hasFailed = markFailed(current.clue, cells, false)
         markSolved(current.clue, cells, clues)
       } else {
         hasFailed = markFailed(current.clue, cells)
@@ -76,9 +80,6 @@
     },
     moveTo: ({ x, y }) => {
       const result = navigateTo({ x, y }, current, cells, clues)
-      if (hasFailed) {
-        hasFailed = clearErrors(current.clue, cells)
-      }
       console.log(current.clue.allowed, result.clue.allowed)
       current.cell = result.cell
       current.clue = result.clue
@@ -86,7 +87,6 @@
     },
     replace: ({ x, y, value }) => {
       if (cells[y][x].solved) return
-
       current.clue.allowed = replaceAllowed(current.clue.allowed, cells[y][x].value, value)
       cells[y][x].value = value
       current = validate(current)
@@ -120,6 +120,7 @@
       value: e.detail.char
     })
   }
+
 </script>
 
 <div
@@ -155,4 +156,5 @@
     grid-template-rows: repeat(var(--size), minmax(0, 1fr));
     grid-template-columns: repeat(var(--size), minmax(0, 1fr));
   }
+
 </style>

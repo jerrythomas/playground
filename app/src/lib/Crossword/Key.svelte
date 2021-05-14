@@ -10,6 +10,7 @@
     dispatch('click', { char })
   }
   $: style = uppercase ? ' uppercase' : '' + disabled ? ' opacity-50' : ''
+
 </script>
 
 <li
@@ -19,8 +20,9 @@
   {char}
 </li>
 
-<style type="postcss">
+<style lang="postcss">
   .disabled {
     @apply opacity-50;
   }
+
 </style>

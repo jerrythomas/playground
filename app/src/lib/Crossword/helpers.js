@@ -146,8 +146,8 @@ function makeCells(input, size) {
           y,
           directions: {},
           number: null,
-          value: ''
-          // expected: answer,
+          value: '',
+          expected: answer
           // position: i
         }
       }

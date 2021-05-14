@@ -17,6 +17,7 @@
       error: new Error(message)
     }
   }
+
 </script>
 
 <script>
@@ -25,6 +26,7 @@
 
   export let width = 50
   $: styleVars = { asideWidth: width + 'ch', headHeight: 2 + 'em' }
+
 </script>
 
 <wrap class="flex flex-row h-full" use:cssVars={styleVars}>
@@ -42,7 +44,7 @@
   </section>
 </wrap>
 
-<style type="postcss">
+<style lang="postcss">
   /* div {
     @apply w-full h-full ;
   } */
@@ -55,4 +57,5 @@
   section {
     @apply border-0  w-full h-full overflow-hidden;
   }
+
 </style>

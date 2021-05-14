@@ -13,6 +13,7 @@
   // function fill(used, crossed) {
   //   return used ? 'bg-blue-50' : crossed ? 'bg-red-50' : 'bg-blue-400'
   // }
+
 </script>
 
 <div class="flex flex-col items-center my-4 mx-auto" use:cssVars={styleVars}>
@@ -28,7 +29,7 @@
   {/if}
 </div>
 
-<style type="postcss">
+<style lang="postcss">
   li {
     @apply flex w-10 h-10 items-center justify-center leading-loose;
     @apply rounded-md cursor-pointer shadow-2xl;
@@ -41,4 +42,5 @@
   .used {
     @apply bg-gray-300;
   }
+
 </style>

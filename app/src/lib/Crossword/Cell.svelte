@@ -25,18 +25,6 @@
   $: focus = current ? 'bg-yellow-300' : ''
   $: active = clue.cells.filter((cell) => cell.x == x && cell.y == y).length == 1
 
-  /* @apply does not work in svelte.dev */
-  $: style = blank
-    ? 'bg-gray-600'
-    : error && focus
-    ? 'bg-red-500 text-red-100 border-2 border-red-300'
-    : error
-    ? 'bg-red-500 text-red-100'
-    : focus
-    ? 'bg-yellow-300'
-    : active
-    ? 'bg-yellow-100'
-    : ''
   function handleClick(e) {
     if (solved || blank) return
     const action = !current ? 'moveTo' : value != '' ? 'remove' : 'toggle'
@@ -53,10 +41,11 @@
       dispatch('change', { x, y, action: 'moveTo' })
     }
   }
+
 </script>
 
 <li
-  class="flex items-center justify-center w-10 h-10 relative bg-white cursor-pointer {style}"
+  class="flex items-center justify-center w-10 h-10 relative bg-white cursor-pointer"
   class:blank
   class:active
   class:focus
@@ -73,7 +62,7 @@
   {/if}
 </li>
 
-<style type="postcss">
+<style lang="postcss">
   .active {
     @apply bg-yellow-100;
   }
@@ -81,12 +70,13 @@
     @apply bg-yellow-300;
   }
   .error {
-    @apply bg-red-100 text-red-500;
+    @apply bg-red-500 text-red-100;
   }
   .error.focus {
-    @apply bg-red-100 text-red-500 border-2 border-red-300;
+    @apply bg-red-500 text-red-100 border-2 border-red-300;
   }
   .blank {
     @apply bg-gray-600;
   }
+
 </style>

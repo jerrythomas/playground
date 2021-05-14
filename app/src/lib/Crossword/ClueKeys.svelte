@@ -13,6 +13,7 @@
   function fill(used, crossed) {
     return used ? 'bg-blue-50' : crossed ? 'bg-red-50' : 'bg-blue-400'
   }
+
 </script>
 
 <div use:cssVars={styleVars} class="flex flex-col m-auto items-center justify-center ">
@@ -26,9 +27,10 @@
   {/if}
 </div>
 
-<style>
+<style lang="postcss">
   /* fix the width for ul based max letters per row */
   div {
     width: calc(3rem * var(--width) + 0.25rem);
   }
+
 </style>
