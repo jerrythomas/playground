@@ -2,7 +2,7 @@
   // ensure that parent has position: relative.
   // on reaching limit remove mouse events.
   import { createEventDispatcher } from 'svelte'
-  import { pannable } from './pannable'
+  import { pannable } from './actions/pannable'
 
   const dispatch = createEventDispatcher()
 
@@ -38,6 +38,7 @@
   $: fixLimits()
   $: horizontal = !vertical
   $: side = horizontal ? 'left' : 'top'
+
 </script>
 
 <span
@@ -86,4 +87,5 @@
     width: 100%;
     height: 1px;
   }
+
 </style>

@@ -1,6 +1,6 @@
 <script>
   import cssVars from 'svelte-css-vars'
-  import Splitter from './Splitter/index.svelte'
+  import Splitter from './Splitter.svelte'
 
   export let vertical = false
   export let min = 30
@@ -22,10 +22,11 @@
   function onSplitterChange(e) {
     pos = e.detail.pos - e.detail.offset
   }
+
 </script>
 
 <div class="relative flex w-full h-full" use:cssVars={direction}>
-  <section use:cssVars={sizeA} class="flex flex-grow flex-shrink select-none bg-purple-300">
+  <section use:cssVars={sizeA} class="flex flex-grow flex-shrink select-none">
     <slot name="a" />
   </section>
   <section use:cssVars={sizeB} class="flex flex-grow flex-shrink select-none">
@@ -42,4 +43,5 @@
     width: calc(var(--width) * 1%);
     height: calc(var(--height) * 1%);
   }
+
 </style>

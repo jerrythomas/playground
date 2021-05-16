@@ -9,8 +9,6 @@
   export let cursor
   export let solved = false
   export let blank = false
-  export let active = false
-  export let focus = false
   export let error = false
   export let number = null
   export let clue
@@ -21,8 +19,6 @@
   $: current = isEqual({ x, y }, cursor)
   $: needsFocus = current && me && document.activeElement !== me
   $: needsFocus && me.focus()
-
-  $: focus = current ? 'bg-yellow-300' : ''
   $: active = clue.cells.filter((cell) => cell.x == x && cell.y == y).length == 1
 
   function handleClick(e) {
@@ -45,10 +41,10 @@
 </script>
 
 <li
-  class="flex items-center justify-center w-10 h-10 relative bg-white cursor-pointer"
+  class="flex items-center justify-center w-10 h-10 relative bg-primary-50 cursor-pointer"
   class:blank
   class:active
-  class:focus
+  class:current
   class:error
   bind:this={me}
   on:click={handleClick}
@@ -56,7 +52,7 @@
   tabIndex={blank ? -1 : 0}>
   {#if !blank}
     {#if number}
-      <i class="text-xs text-current absolute top-0 left-0.5 opacity-50">{number}</i>
+      <i class="text-xs text-current absolute top-0 left-0.5 opacity-60">{number}</i>
     {/if}
     {value}
   {/if}
@@ -64,19 +60,19 @@
 
 <style lang="postcss">
   .active {
-    @apply bg-yellow-100;
+    @apply bg-accent-100 text-accent-600;
   }
-  .focus {
-    @apply bg-yellow-300;
+  .current {
+    @apply bg-accent-300 text-accent-600;
   }
   .error {
-    @apply bg-red-500 text-red-100;
+    @apply bg-fail-500 text-fail-100;
   }
-  .error.focus {
-    @apply bg-red-500 text-red-100 border-2 border-red-300;
+  .error.current {
+    @apply bg-fail-500 text-fail-100 border-2 border-fail-300;
   }
   .blank {
-    @apply bg-gray-600;
+    @apply bg-primary-600;
   }
 
 </style>

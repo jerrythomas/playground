@@ -1,13 +1,15 @@
 <script>
   export let size = 6
   export let title = ''
+  export let icon
+
 </script>
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  class="h-{size} w-{size}"
-  viewBox="0 0 24 24"
-  stroke="currentColor">
+  class="h-{size} w-{size} fill-current stroke-current {$$props.class}"
+  viewBox="0 0 24 24">
   <title>{title}</title>
-  <slot />
+  <!-- <slot /> -->
+  <svelte:component this={icon} />
 </svg>

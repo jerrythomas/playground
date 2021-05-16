@@ -40,6 +40,7 @@
       misses = [...misses, word]
     }
   }
+
 </script>
 
 <svelte:head>
@@ -48,14 +49,16 @@
 
 <div class="w-full h-full flex flex-col">
   <span
-    class="flex flex-row content-between items-center w-full py-3 bg-gray-100 border-b border-gray-600">
-    <button on:click={scramble} class="leading-loose p-1 bg-gray-600  text-gray-50 mx-2 rounded-md">
+    class="flex flex-row content-between items-center w-full py-3 bg-primary-100 border-b border-primary-600">
+    <button
+      on:click={scramble}
+      class="leading-loose p-1 bg-primary-600  text-primary-50 mx-2 rounded-md">
       <IconShuffle />
     </button>
     <ul class="flex items-center justify-center">
       {#each blocks as char}
         <li
-          class="flex font-mono leading-loose px-2 ml-1 border border-gray-800 rounded bg-gray-300">
+          class="flex font-mono leading-loose px-2 ml-1 border border-primary-800 rounded bg-primary-300">
           {char}
         </li>
       {/each}
@@ -66,8 +69,8 @@
       class="leading-loose px-2 rounded md:mx-auto"
       on:keyup={(e) => e.key === 'Enter' && add()} />
     <div
-      class="flex flex-row ml-auto leading-loose rounded w-max border border-gray-800 content-between">
-      <span class="px-2 bg-gray-600 text-gray-50">Score</span>
+      class="flex flex-row ml-auto leading-loose rounded w-max border border-primary-800 content-between">
+      <span class="px-2 bg-primary-600 text-primary-50">Score</span>
       <b class="px-2 text-right">{score}</b>
     </div>
   </span>

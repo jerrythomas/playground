@@ -1,5 +1,4 @@
 import { shuffle, sampleSize, difference } from 'lodash'
-// import _ from 'lodash'
 import { range, sorted, omit } from '$lib/utils'
 
 const alphabets = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ')

@@ -1,14 +1,22 @@
 <script>
   import cssVars from 'svelte-css-vars'
   import { isEqual, isEmpty } from 'lodash'
-  import { navigate } from './keyboard'
   import { stepper, omit } from '$lib/utils'
 
+  import { navigate } from './lib/keyboard'
   import Cell from './Cell.svelte'
   import ClueKeys from './ClueKeys.svelte'
 
-  import { skipBlanks, skipFilled, replaceAllowed } from './crossword'
-  import { getClueForDirection, markFailed, clearErrors, markSolved, navigateTo } from './crossword'
+  import {
+    skipBlanks,
+    skipFilled,
+    markFailed,
+    markSolved,
+    navigateTo,
+    clearErrors,
+    replaceAllowed,
+    getClueForDirection
+  } from './lib/crossword'
 
   export let size
   export let cells
@@ -27,6 +35,15 @@
   $: allowed = current.clue.allowed.filter((el) => !el.used).map(({ char }) => char)
   $: activeCell = { x: current.cell.x, y: current.cell.y, allowed }
   $: focussed = !isEmpty(current.cell)
+  $: completed =
+    cells
+      .map(
+        (row) =>
+          row.map(({ solved, blank }) => !blank && !solved).filter((unsolved) => !unsolved)
+            .length == 0
+      )
+      .filter((unsolved) => !unsolved).length == 0
+
   function clearCells(clue) {
     clue.cells.map((pos) => {
       cells[pos.y][pos.x].error = false
@@ -34,6 +51,7 @@
     })
     return cells
   }
+
   function validate(current) {
     const filled =
       current.clue.allowed.filter(({ used }) => used).length == current.clue.answer.length
@@ -105,7 +123,7 @@
       const other = current.clue.direction === 'across' ? 'down' : 'across'
       const clue = getClueForDirection(clues, cells, other, x, y)
       switchClue(clue)
-      console.log(clue, current)
+      // console.log(clue, current)
     }
   }
 
@@ -128,7 +146,7 @@
   use:navigate={activeCell}
   on:change={handleChange}>
   <ul
-    class="grid gap-px bg-gray-700 border border-gray-700 focus:border-blue-600 focus:border-2 outline-none"
+    class="grid gap-px bg-primary-700 border border-primary-700 focus:border-accent-600 focus:border-2 outline-none"
     use:cssVars={style}
     tabindex={0}>
     {#each cells as row, y}

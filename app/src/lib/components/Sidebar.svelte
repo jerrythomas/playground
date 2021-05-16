@@ -1,14 +1,18 @@
 <script>
   export let items = []
+
 </script>
 
-<ul class="flex flex-col bg-gray-100 text-gray-900 h-full w-full">
+<ul class="flex flex-col bg-primary-600 text-primary-50 h-full w-full">
   {#each items as item}
-    <li class:separator={item.separator} class="">
+    <li
+      class:separator={item.separator}
+      class="text-accent-100 hover:bg-accent-300 hover:text-accent-600">
       {#if item.separator}
         <hr />
       {:else}
-        <a href={item.href} alt={item.label} class="w-full"> {item.label}</a>
+        <a href={item.href} alt={item.label} class="w-full text-current hover:no-underline">
+          {item.label}</a>
       {/if}
     </li>
   {/each}
@@ -16,11 +20,10 @@
 
 <style lang="postcss">
   li {
-    @apply h-12 px-4 py-2 leading-loose;
-    @apply hover:bg-gray-300;
-    @apply hover:text-white;
+    @apply flex h-10 px-4 items-center;
   }
   .separator {
-    @apply py-2 h-4 hover:bg-transparent;
+    @apply mt-1 mb-2 h-1 hover:bg-transparent;
   }
+
 </style>
