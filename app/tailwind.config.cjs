@@ -1,5 +1,6 @@
 const { tailwindExtractor } = require('tailwindcss/lib/lib/purgeUnusedStyles')
-const { pass, fail, warn, info } = require('./colors.cjs')
+// const { pass, fail, warn, info } = require('./colors.cjs')
+const colors = require('tailwindcss/colors')
 
 function withOpacity(variableName) {
   return ({ opacityValue }) => {
@@ -39,10 +40,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        pass,
-        fail,
-        warn,
-        info
+        pass: colors.emerald,
+        fail: colors.rose,
+        warn: colors.yellow,
+        info: colors.lightBlue,
+        accent: colors.blue,
+        primary: colors.blueGray
       },
       padding: {
         '1/3': '33.33333%',
